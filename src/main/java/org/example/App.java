@@ -4,11 +4,14 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
+        Scanner consoleScanner = new Scanner(System.in);
         MyGraph graph = getGraphForVariant9();
         System.out.print("Enter start vertex: ");
-        int startVertex = Integer.parseInt(new Scanner(System.in).nextLine());
+        int startVertex = Integer.parseInt(consoleScanner.nextLine());
+        System.out.print("Enter end vertex: ");
+        int endVertex = Integer.parseInt(consoleScanner.nextLine());
         System.out.println("Depth first traversal: " + graph.depthFirstTraversal(startVertex));
-        System.out.println("Width first traversal: " + graph.widthFirstTraversal(startVertex));
+        System.out.println("Width first traversal search: " + graph.widthFirstTraversalSearch(startVertex, endVertex));
     }
 
     private static MyGraph getGraphForVariant9() {

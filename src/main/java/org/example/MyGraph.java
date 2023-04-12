@@ -3,9 +3,12 @@ package org.example;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
@@ -44,22 +47,39 @@ public class MyGraph extends SimpleGraph<Integer, DefaultEdge> {
         return edgeSource.equals(currentVertex) ? getEdgeTarget(edge) : edgeSource;
     }
 
-    public List<Integer> widthFirstTraversal(int startVertex){
-        Set<Integer> visitedVertexes = new LinkedHashSet<>();
+    public List<Integer> widthFirstTraversalSearch(int startVertex, int endVertex) {
+        Map<Integer, Integer> neighbourToItsVertex = new HashMap<>();
+        List<Integer> path = new LinkedList<>();
         Queue<Integer> queue = new LinkedList<>();
         queue.offer(startVertex);
-        visitedVertexes.add(startVertex);
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             Integer currentVertex = queue.poll();
-            edgesOf(currentVertex).stream()
+            List<Integer> nonVisitedVertexes = edgesOf(currentVertex).stream()
                     .map(edge -> getNextVertex(edge, currentVertex))
-                    .filter(vertex -> !visitedVertexes.contains(vertex))
-                    .forEach(vertex -> {
-                        queue.offer(vertex);
-                        visitedVertexes.add(vertex);
-                    });
+                    .filter(vertex -> !neighbourToItsVertex.containsKey(vertex))
+                    .toList();
+            for (var neighbourVertex : nonVisitedVertexes) {
+                neighbourToItsVertex.put(neighbourVertex, currentVertex);
+                if (neighbourVertex.equals(endVertex)) {
+                    path = constructPath(neighbourToItsVertex, startVertex, endVertex);
+                    break;
+                }
+                queue.offer(neighbourVertex);
+            }
         }
-        return visitedVertexes.stream().toList();
+        return path;
+    }
+
+    private List<Integer> constructPath(Map<Integer, Integer> neighbourToItsVertex, int startVertex, int endVertex) {
+        List<Integer> path = new LinkedList<>();
+        int currentVertex = endVertex;
+        while (currentVertex != startVertex) {
+            path.add(currentVertex);
+            currentVertex = neighbourToItsVertex.get(currentVertex);
+        }
+        path.add(startVertex);
+        Collections.reverse(path);
+        return path;
     }
 
 }
