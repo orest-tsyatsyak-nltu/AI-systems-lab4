@@ -56,7 +56,7 @@ public class MyGraph extends SimpleGraph<Integer, DefaultEdge> {
             Integer currentVertex = queue.poll();
             List<Integer> nonVisitedVertexes = edgesOf(currentVertex).stream()
                     .map(edge -> getNextVertex(edge, currentVertex))
-                    .filter(vertex -> !neighbourToItsVertex.containsKey(vertex))
+                    .filter(vertex -> !neighbourToItsVertex.containsKey(vertex) && vertex != startVertex)
                     .toList();
             for (var neighbourVertex : nonVisitedVertexes) {
                 neighbourToItsVertex.put(neighbourVertex, currentVertex);
